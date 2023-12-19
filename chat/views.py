@@ -1,4 +1,5 @@
 from django.contrib.auth import login, logout
+from django.shortcuts import render
 
 from rest_framework import generics
 from rest_framework import permissions
@@ -32,3 +33,7 @@ class ProfileView(generics.RetrieveAPIView):
 
     def get_object(self):
         return self.request.user
+    
+
+def base(request):
+    return render(request, 'base.html')
