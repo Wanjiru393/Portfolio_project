@@ -12,6 +12,11 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
+import environ
+from environ import Env
+
+env = environ.Env(DEBUG=(bool, False))
+environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -133,3 +138,13 @@ JAZZMIN_SETTINGS = {
     'site_logo': 'your_logo.png',
     # ...
 }
+
+# Mpesa settings
+MPESA_CONSUMER_KEY = ""
+MPESA_SECRET_KEY = ""
+MPESA_PASSKEY = ""
+MPESA_BUSINESS_SHORTCODE = ""
+
+# Base URL
+
+BASE_URL = ""
