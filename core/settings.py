@@ -132,12 +132,6 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-JAZZMIN_SETTINGS = {
-    'site_title': 'Admin',
-    'site_header': 'Admin',
-    'site_logo': 'your_logo.png',
-    # ...
-}
 
 # Mpesa settings
 MPESA_CONSUMER_KEY = ""

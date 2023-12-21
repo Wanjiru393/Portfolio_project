@@ -25,7 +25,6 @@ from .utils import MpesaGateWay
 
 cl = MpesaGateWay()
 
-
 def register(request):
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
