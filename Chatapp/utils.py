@@ -45,7 +45,6 @@ class MpesaGateWay:
     checkout_url = None
     timestamp = None
 
-
     def __init__(self):
         now = datetime.now()
         self.business_shortcode = env("business_shortcode")

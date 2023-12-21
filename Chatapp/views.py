@@ -165,7 +165,7 @@ def checkout(request):
             profile.phone_number = form.cleaned_data['phone_number']
             profile.save()
             callback_url = "http://pos.pos.ocratsystems.co.ke/callback/"
-            account_reference = "LaFliq"
+            account_reference = "FashionDen"
             transaction_description = "Payment"
 
             # Create the Mpesa transaction
@@ -176,7 +176,6 @@ def checkout(request):
             
         else:
             errors = form.errors
-
             print(errors)
     else:
         form = CheckoutForm()
