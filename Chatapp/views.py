@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import UserRegistrationForm
+from .forms import UserRegistrationForm, CheckoutForm, ProfileForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .models import Product, Category, Cart, CartItem
+from .models import Product, Category, Cart, CartItem , Profile
 from django.db.models import Subquery, OuterRef, Sum
 import decimal
-
+from django.views.decorators.csrf import csrf_exempt
 
 def product_list(request):
     category_slug = request.GET.get('category')
@@ -40,6 +40,11 @@ def register(request):
         form = UserRegistrationForm()
     return render(request, 'register.html', {'form': form})
 
+@receiver(post_save, sender=User)
+def create_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
 def login_view(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -52,6 +57,19 @@ def login_view(request):
         else:
             messages.error(request, 'Invalid login credentials.')
     return render(request, 'login.html')
+
+@login_required
+def profile(request):
+    user = request.user
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, instance=user.profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your profile has been updated!')
+            return redirect('profile')
+    else:
+        form = ProfileForm(instance=user.profile)
+    return render(request, 'profile.html', {'form': form, 'user': user})
 
 def logout_view(request):
     logout(request)
