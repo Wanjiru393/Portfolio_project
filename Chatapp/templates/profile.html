@@ -1,35 +1,37 @@
 {% extends 'base.html' %}
+{%load static %}
+{% block title %} Profile{%endblock%}
 
 {% block content %}
-  <div class="container my-4">
-    <div class="row">
-      <div class="col-md-8">
-        <h2 class="mb-4">Profile</h2>
-        <form method="post" action="{% url 'profile' %}">
-          {% csrf_token %}
-          <div class="form-group">
-            <label for="first_name">First Name</label>
-            <input type="text" name="first_name" id="first_name" class="form-control" value="{{ user.first_name }}" required>
-          </div>
-          <div class="form-group">
-            <label for="last_name">Last Name</label>
-            <input type="text" name="last_name" id="last_name" class="form-control" value="{{ user.last_name }}" required>
-          </div>
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" name="email" id="email" class="form-control" value="{{ user.email }}" required>
-          </div>
-          <div class="form-group">
-            <label for="phone_number">Phone Number</label>
-            <input type="tel" name="phone_number" id="phone_number" class="form-control" value="{{ user.profile.phone_number }}" required>
-          </div>
-          <div class="form-group">
-            <label for="address">Address</label>
-            <textarea name="address" id="address" class="form-control" required>{{ user.profile.address }}</textarea>
-          </div>
-          <button type="submit" class="btn btn-primary">Update Profile</button>
-        </form>
+<div class="container my-4">
+  <div class="row">
+    <div class="col-sm-6 mt-3">
+      <img src="{% static 'images/profile-holder.jpg' %}" style="width: 90%; height: 90%"/>
+    </div>
+    <div class="col mt-5">
+      <h1 style="text-align: center; color: #000000">About</h1>
+      <p style="text-align: center; color: #000000; font-size: 20px">
+        Lorem Ipsum is simply dummy text of the printing and typesetting
+        industry. Lorem Ipsum has been the industry's standard dummy text ever
+        since the 1500s, when an unknown printer took a galley of type and
+        scrambled it to make a type specimen book. It has survived not only five
+        centuries, remaining essentially unchanged.
+      </p>
+      <div class="track text-center mt-5">
+        <a href="{% url 'home' %}" class="btn btn-sm btn-outline-secondary"><i class="home" aria-hidden="true"></i>Shop Now</a>
+      </div>
+    </div>
+
+    <div class="container mt-5 mb-5">
+      <h1 class="text-center mt-4" style="font-weight: 500px">
+        Recommendations
+      </h1>
+      <div class="row">
+        <div class="col-lg-3 mt-4">
+          <!-- products -->
+        </div>
       </div>
     </div>
   </div>
-{% endblock %}
+  {% endblock %}
+</div>
