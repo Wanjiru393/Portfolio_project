@@ -14,7 +14,7 @@ from .forms import UserRegistrationForm, CheckoutForm, ProfileForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
-from .models import Product, Category, Cart, CartItem, Profile, Order
+from .models import *
 from django.db.models import Subquery, OuterRef, Sum
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
@@ -22,6 +22,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from .utils import MpesaGateWay
+from django.db.models import Q
 
 cl = MpesaGateWay()
 
@@ -197,3 +198,22 @@ def mpesa_callback(request):
         order.save()
 
     return HttpResponse(status=200)
+
+@login_required
+def create_review(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    if request.method == 'POST':
+        rating = request.POST['rating']
+        comment = request.POST['comment']
+        Review.objects.create(product=product, user=request.user, rating=rating, comment=comment)
+        return redirect('product_detail', product_id=product_id)
+
+
+def recommended_products(request):
+    user_orders = Order.objects.filter(user=request.user)
+    ordered_products = Product.objects.filter(order__in=user_orders)
+    if ordered_products:
+        category = ordered_products.first().category
+        recommended_products = Product.objects.filter(category=category).exclude(id__in=ordered_products)
+        return render(request, 'recommended_products.html', {'products': recommended_products})
+    return HttpResponse("No recommendations available.")
