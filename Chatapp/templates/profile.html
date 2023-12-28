@@ -1,27 +1,27 @@
-{% extends 'base.html' %}
-{%load static %}
-{% block title %} Profile{%endblock%}
+{% extends 'base.html' %} 
+{%load static %} 
 
+{% block title %} Profile{%endblock%}
 {% block content %}
 <div class="container my-4">
   <div class="row">
     <div class="col-sm-6 mt-3">
-      <img src="{% static 'images/profile-holder.jpg' %}" style="width: 90%; height: 90%"/>
+      <img src="{{ profile.profile_picture.url }}" style="width: 90%; height: 90%"/>
     </div>
     <div class="col mt-5">
       <h1 style="text-align: center; color: #000000">About</h1>
       <p style="text-align: center; color: #000000; font-size: 20px">
-        Lorem Ipsum is simply dummy text of the printing and typesetting
-        industry. Lorem Ipsum has been the industry's standard dummy text ever
-        since the 1500s, when an unknown printer took a galley of type and
-        scrambled it to make a type specimen book. It has survived not only five
-        centuries, remaining essentially unchanged.
+        Full Name: {{ user.get_full_name }}<br />
+        Email Address: {{ user.email }}<br />
+        Contact Number: {{ profile.phone_number }}<br />
+        Shipping Address: {{ profile.address }}
       </p>
       <div class="track text-center mt-5">
         <a href="{% url 'home' %}" class="btn btn-sm btn-outline-secondary"><i class="home" aria-hidden="true"></i>Shop Now</a>
+        <a href="{% url 'edit_profile' %}" class="btn btn-sm btn-outline-secondary"><i class="edit_profile" aria-hidden="true"></i>Edit Profile</a>
+
       </div>
     </div>
-
     <div class="container mt-5 mb-5">
       <h1 class="text-center mt-4" style="font-weight: 500px">
         Recommendations

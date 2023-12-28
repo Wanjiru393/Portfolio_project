@@ -10,7 +10,7 @@ import json
 import logging
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
-from .forms import UserRegistrationForm, CheckoutForm, ProfileForm
+from .forms import *
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -39,7 +39,20 @@ def register(request):
 @receiver(post_save, sender=User)
 def create_profile(sender, instance, created, **kwargs):
     if created:
-        Profile.objects.create(user=instance)
+        Profile.objects.create(
+            user=instance,
+            profile_picture='default.jpg',
+        )
+
+def edit_profile(request):
+    if request.method == 'POST':
+        form = ProfileEditForm(request.POST, request.FILES, instance=request.user.profile)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')
+    else:
+        form = ProfileEditForm(instance=request.user.profile)
+    return render(request, 'edit_profile.html', {'form': form})
 
 def login_view(request):
     if request.method == 'POST':

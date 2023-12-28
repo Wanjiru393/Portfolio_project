@@ -46,7 +46,7 @@ INSTALLED_APPS = [
 
     #installed apps
     'Chatapp',
-    'jazzmin',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -144,5 +144,6 @@ MPESA_BUSINESS_SHORTCODE = ""
 # Base URL
 
 BASE_URL = ""
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 LOGIN_URL = '/login/'

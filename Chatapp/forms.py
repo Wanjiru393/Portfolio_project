@@ -5,12 +5,16 @@ from django.contrib.auth.models import User
 from .models import Profile
 
 class UserRegistrationForm(UserCreationForm):
-    email = forms.EmailField()
+    first_name = forms.CharField(max_length=30)
+    last_name = forms.CharField(max_length=30)
+    email = forms.EmailField(max_length=254)
+    phone_number = forms.CharField(max_length=20)
+    address = forms.CharField(max_length=255)
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2']
-
+        fields = ['username', 'first_name', 'last_name', 'email', 'phone_number', 'address', 'password1', 'password2']
+    
 class CheckoutForm(forms.Form):
     email = forms.EmailField(required=True)
     phone_number = forms.CharField(required=True)
@@ -40,3 +44,9 @@ class ProfileForm(forms.ModelForm):
         profile.address = self.cleaned_data['address']
         profile.save()
         return profile
+    
+
+class ProfileEditForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['phone_number', 'address', 'profile_picture']
