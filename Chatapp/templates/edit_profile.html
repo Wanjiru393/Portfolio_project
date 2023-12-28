@@ -2,9 +2,20 @@
 {% load static %}
 
 {% block content %}
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Update</button>
-</form>
+<div class="container my-4">
+    <div class="row">
+        <div class="col-sm-6 mt-3">
+            <div class="col mt-5">
+                <h2 style="text-align: center; color: #000000">Edit Profile</h2>
+            </div>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Update</button>
+            </form>
+        </div>
+    </div>
+</div>
+    
+      
 {%endblock%}

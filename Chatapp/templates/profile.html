@@ -6,11 +6,11 @@
 <div class="container my-4">
   <div class="row">
     <div class="col-sm-6 mt-3">
-      <img src="{{ profile.profile_picture.url }}" style="width: 90%; height: 90%"/>
+      <img src="{{ profile.profile_picture.url }}" style="width: 80%; height: 100%"/>
     </div>
     <div class="col mt-5">
       <h1 style="text-align: center; color: #000000">About</h1>
-      <p style="text-align: center; color: #000000; font-size: 20px">
+      <p style="color: #000000; font-size: 20px">
         Full Name: {{ user.get_full_name }}<br />
         Email Address: {{ user.email }}<br />
         Contact Number: {{ profile.phone_number }}<br />
@@ -23,15 +23,31 @@
       </div>
     </div>
     <div class="container mt-5 mb-5">
-      <h1 class="text-center mt-4" style="font-weight: 500px">
-        Recommendations
-      </h1>
-      <div class="row">
-        <div class="col-lg-3 mt-4">
-          <!-- products -->
-        </div>
-      </div>
-    </div>
+      <h2 class="text-center mt-4" style="font-weight: 300px">Order History</h2>
+      <table class="table">
+          <thead>
+              <tr>
+                  <th>Order ID</th>
+                  <th>Status</th>
+                  <th>Total Amount</th>
+                  <th>Order Items</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for order in orders %}
+                  <tr>
+                      <td>{{ order.id }}</td>
+                      <td>{{ order.get_status_display }}</td>
+                      <td>Ksh. {{ order.total_amount }}</td>
+                      <td>
+                          {% for item in order.orderitem_set.all %}
+                              <p>{{ item.product.name }}: {{ item.quantity }} x  Ksh. {{ item.unit_price }}</p>
+                          {% endfor %}
+                      </td>
+                  </tr>
+              {% endfor %}
+          </tbody>
+      </table>
   </div>
-  {% endblock %}
 </div>
+{% endblock %}

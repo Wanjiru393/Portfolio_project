@@ -44,6 +44,7 @@ class MpesaGateWay:
     access_token_expiration = None
     checkout_url = None
     timestamp = None
+    headers = None
 
     def __init__(self):
         now = datetime.now()
@@ -67,9 +68,9 @@ class MpesaGateWay:
     def getAccessToken(self):
         try:
             res = requests.get(self.access_token_url, auth=HTTPBasicAuth(self.consumer_key, self.consumer_secret))
-            print(res)
-        except Exception as err:
-            logging.error("Error {}".format(err))
+            res.raise_for_status() 
+        except requests.exceptions.RequestException as err:
+            raise MpesaConnectionError(f"Error: {err}")
         else:
             token = res.json()["access_token"]
             self.headers = {"Authorization": "Bearer %s" % token}
@@ -89,6 +90,7 @@ class MpesaGateWay:
 
     def generate_password(self):
         """Generates mpesa api password using the provided shortcode and passkey"""
+        now = datetime.now()
         self.timestamp = now.strftime("%Y%m%d%H%M%S")
         password_str = env("business_shortcode") + env("pass_key") + self.timestamp
         password_bytes = password_str.encode("ascii")

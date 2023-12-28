@@ -20,6 +20,8 @@ urlpatterns = [
     path('update-cart/', views.update_cart, name='update_cart'),
     path('checkout/', views.checkout, name='checkout'),
     path('mpesa/callback/', views.mpesa_callback, name='mpesa_callback'),
+    path('success/', views.success, name='success'),
+
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

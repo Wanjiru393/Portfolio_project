@@ -37,6 +37,7 @@ class Profile(models.Model):
     address = models.CharField(max_length=255, null=True, blank=True)
     profile_picture = models.ImageField(upload_to='images/profile_pictures/', default='images/profile_pictures/default.jpg')
 
+
 class Order(models.Model):
     STATUS_CHOICES = (
         ('processing', 'Processing'),
@@ -44,16 +45,24 @@ class Order(models.Model):
         ('delivered', 'Delivered'),
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='orders')
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='orders', null=True)
     total_amount = models.DecimalField(max_digits=8, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='processing')
+    transaction_code = models.CharField(max_length=100, null=True, blank=True)
+    contact_info = models.CharField(max_length=20, null=True, blank=True)
 
     def save(self, *args, **kwargs):
         if not self.contact_info:
             profile = self.user.profile
-            self.contact_info = profile.contact_info
+            self.contact_info = profile.phone_number if profile.phone_number else None
         super().save(*args, **kwargs)
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+    unit_price = models.DecimalField(max_digits=8, decimal_places=2)
 
 class Review(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)

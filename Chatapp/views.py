@@ -2,12 +2,8 @@ import decimal
 from decimal import Decimal
 import requests
 from requests.auth import HTTPBasicAuth
-import base64
-import time
-import datetime
-import hashlib
 import json
-import logging
+from datetime import datetime
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from .forms import *
@@ -70,6 +66,7 @@ def login_view(request):
 @login_required
 def profile(request):
     user = request.user
+    orders = Order.objects.filter(user=user)
     if request.method == 'POST':
         form = ProfileForm(request.POST, instance=user.profile)
         if form.is_valid():
@@ -78,7 +75,7 @@ def profile(request):
             return redirect('profile')
     else:
         form = ProfileForm(instance=user.profile)
-    return render(request, 'profile.html', {'form': form, 'user': user})
+    return render(request, 'profile.html', {'form': form, 'user': user, 'orders': orders})
 
 def logout_view(request):
     logout(request)
@@ -178,24 +175,46 @@ def checkout(request):
             profile = request.user.profile
             profile.phone_number = form.cleaned_data['phone_number']
             profile.save()
+
+            # Create the Mpesa transaction
             callback_url = "http://pos.pos.ocratsystems.co.ke/callback/"
             account_reference = "FashionDen"
             transaction_description = "Payment"
-
-            # Create the Mpesa transaction
             response = cl.stk_push(phone_number=profile.phone_number, amount=int(total), callback_url=callback_url, account_reference=account_reference, transaction_desc=transaction_description)
+           
             
-            return HttpResponse(response)
-            
-            
-        else:
-            errors = form.errors
-            print(errors)
+
+            # Check if the STK push was successful
+            if response.error_code is None or response.error_code == 0:
+                # Create an order with a default status of "processing"
+                order = Order.objects.create(
+                    user=request.user,
+                    total_amount=total,
+                    status='processing'
+                )
+
+                # Add order items to the order
+                for cart_item in cart_items:
+                    OrderItem.objects.create(
+                        order=order,
+                        product=cart_item.product,
+                        quantity=cart_item.quantity,
+                        unit_price=cart_item.product.price
+                    )
+
+                # Clear the cart
+                cart.cartitem_set.all().delete()
+                # Redirect or render success page
+                return redirect('success')
+
+            else:
+                # Handle the case where the STK push failed
+                errors = form.errors
+                print(errors)
     else:
         form = CheckoutForm()
 
     return render(request, 'checkout.html', {'cart_items': cart_items, 'subtotal': subtotal, 'tax': tax, 'total': total, 'form': form})
-
 
 @csrf_exempt
 def mpesa_callback(request):
@@ -211,6 +230,9 @@ def mpesa_callback(request):
         order.save()
 
     return HttpResponse(status=200)
+
+def success(request):
+    return render(request, 'success.html')
 
 @login_required
 def create_review(request, product_id):
